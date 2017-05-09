@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>隧道</title>
+		
+		<style type="text/css">
+		    body{overflow: hidden;background: url(img/timg.jpg);}
+		    *{margin: 0;}
+		   /* -webkit  谷歌浏览器内核  多种颜色过渡
+		    * background: -webkit-linear-gradient(#f2f2f2,#c3c3c3,#f2f2f2)
+		    * */
+		  
+			#content{width: 100px;height: 100px;/*right: 0;left: 0;top: 0;bottom: 0;position: absolute;background: -webkit-linear-gradient(#f2f2f2,#c3c3c3,#f2f2f2);*/
+			margin:200px auto;transform-style: preserve-3d;animation: spin 3s linear infinite;}/*animation: spin 3s linear infinite;*/
+			.d{width:100px;height: 100px;background: url(img/timg.jpg);text-align: center;line-height: 100px;
+			font-size: 50px;position: absolute;}/*infinite 无限执行*/
+			.d1{animation: ranA 3s linear infinite;top: 100px;}
+			.d11{animation: ranA 3s 1s linear infinite;opacity: 0;}
+			.d111{animation: ranA 3s 2s linear infinite;opacity: 0;}
+			
+			.d2{animation: ranB 3s linear infinite;top 0;}
+			.d22{animation: ranB 3s 1s linear infinite;opacity: 0;}
+			.d222{animation: ranB 3s 2s linear infinite;opacity: 0;}
+			
+			.d3{top:50px;left: -50px;animation: ranC 3s linear infinite;}
+			.d33{animation: ranC 3s 1s linear infinite;opacity: 0;}
+			.d333{animation: ranC 3s 2s linear infinite;opacity: 0;}
+			
+			.d4{animation: ranD 3s linear infinite;top:50px;left: 50px;}
+			.d44{animation: ranD 3s 1s linear infinite;opacity: 0;}
+			.d444{animation: ranD 3s 2s linear infinite;opacity: 0;}
+			
+			/*定义一个关键帧*/
+			@keyframes ranA{
+				from{transform: perspective(10px) rotateX(12.5deg) rotateZ(180deg) translateY(200px);opacity: 1;}
+				to{transform: perspective(10px) rotateX(12.5deg) rotateZ(180deg) translateY(-100px);opacity: 1;}
+			}
+			@keyframes ranB{
+				from{transform: perspective(10px) rotateX(-12.5deg)translateY(200px);opacity: 1;}
+				to{transform: perspective(10px) rotateX(-12.5deg)translateY(-100px);opacity: 1;}
+			}
+			@keyframes ranC{
+				from{transform: perspective(10px)rotateX(0deg)rotateY(12.5deg)rotateZ(-90deg)translateY(200px);opacity: 1;}
+				to{transform: perspective(10px)rotateX(0deg)rotateY(12.5deg)rotateZ(-90deg)translateY(-100px);opacity: 1;}
+			}
+			@keyframes ranD{
+				from{transform: perspective(10px)rotateX(0deg) rotateY(-12.5deg)rotateZ(90deg) translateY(200px);opacity: 1;}
+				to{transform: perspective(10px)rotateX(0deg) rotateY(-12.5deg)rotateZ(90deg)translateY(-100px);opacity: 1;}
+			}
+			@keyframes spin{
+				from{transform: rotate(0deg)scale(1);}
+				50%{transform: rotate(180deg)scale(1);}
+				to{transform: rotate(360deg)scale(1);}
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="content">
+			<div class="d d1">A</div>
+			<div class="d d1 d11">A</div>
+			<div class="d d1 d111">A</div>
+			
+			<div class="d d2">A</div>
+			<div class="d d2 d22">A</div>
+			<div class="d d2 d222">A</div>
+			
+			<div class="d d3">A</div>
+			<div class="d d3 d33">A</div>
+			<div class="d d3 d333">A</div>
+			
+			<div class="d d4">A</div>
+			<div class="d d4 d44">A</div>
+			<div class="d d4 d444">A</div>
+		</div>
+		
+	</body>
+</html>
