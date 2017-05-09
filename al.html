@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!--
+        	搜索引擎搜索的关键字
+        	关键字 做后台接口处理，动态改变的
+        -->
+		<meta name="keywords" content="关键字" />
+		<meta name="description" content="描述信息" />
+		<title>Java开发五子棋</title>
+		<style>
+			#canvas{background=#fff; display: block;margin: 100px auto;box-shadow: 0 0 10px #000;border-radius: 4px; }
+			
+		</style>
+	</head>
+	<body>
+		<!-- canvas 画布 容器-->
+		<canvas id="canvas" width="450" height="450"></canvas>
+		
+		
+	</body>
+	<script type="text/javascript">
+		    //alert("执行");
+		    //拿到画布
+			var canvas=document.getElementById("canvas");
+			//获取权限 上下文 画笔
+			var context=canvas.getContext("2d");
+			context.strokeStyle="#838383";			
+			var over=false;
+			//绘制棋盘
+			var drawChessboard =function(){
+				for(var i=0;i<15;i++){
+					context.beginPath();
+					context.moveTo(15+i*30,15);
+					context.lineTo(15+i*30,435);
+					context.closePath();
+					context.stroke();
+					
+					context.beginPath();
+					context.moveTo(15,15+i*30);
+					context.lineTo(435,15+i*30);
+					context.closePath();
+					context.stroke();
+			    }
+			}
+			drawChessboard();
+			
+			//绘制棋子 画圆  圆心 半径
+			//context.arc(x,y,r,开始,结束)
+			var onStep=function(i,j,me){
+				context.beginPath();
+				context.arc(15+i*30,15+j*30,13,0,Math.PI*2);
+				context.closePath();
+				context.stroke();
+				//设置  渐变色  不同颜色的渐变
+				var gradient=context.createRadialGradient(15+i*30,15+j*30,13,15+i*30,15+j*30,0);
+				if(me){
+					gradient.addColorStop(0,"#0a0a0a")
+					gradient.addColorStop(1,"#636766")
+					//context.fillStyle="#fff";
+				}else{
+					gradient.addColorStop(0,"#d1d1d1")
+					gradient.addColorStop(1,"#f9f9f9")
+					//context.fillStyle="#000000";
+				}
+				//context.fillStyle="red";
+				context.fillStyle=gradient;
+				context.fill();
+			}
+			
+			
+			//落棋子
+			var me=true;
+			//定义一个二维数组保存棋盘上面的落子问题
+			var chessBoard=[];
+			for(var i=0;i<15;i++){
+				chessBoard[i]=[];
+				for(var j=0;j<15;j++){
+					chessBoard[i][j]=0;
+				}
+			}
+			canvas.onclick=function(e){
+				if(over){
+					return;
+				}
+				if(!me){
+					return;
+				}
+				//获取鼠标的坐标
+				var x=e.offsetX;
+			    var y=e.offsetY;
+			    //console.log(x+"==="+y);
+			    //向下取整
+			    var i=Math.floor(x/30);
+			    var j=Math.floor(y/30);
+			    if(chessBoard[i][j]==0){
+			    	/*if(me){
+			    		onStep(i,j,me);
+			    		chessBoard[i][j]=1;
+			    	}else{
+			    		onStep(i,j,me);
+			    		chessBoard[i][j]=2;
+			    	}*/
+			    	onStep(i,j,me);
+			    	chessBoard[i][j]=1;
+			    	for(var k=0;k<count;k++){
+			    		if(wins[i][j][k]){
+			    			myWin[k]++;
+			    			computerWin[k]=6;
+			    			if(myWin[k]==5){
+			    				alert("你赢了");
+			    				over=true;
+			    			}
+			    		}
+			    	}
+			    	//这里是先执行computerAl方法，再执行落子方法？？？？？？why?
+			    	
+			    	//这跟以前玩的简单电脑象棋游戏游戏类似，黑子落子，白子几乎同时落子几乎同时
+			    	if(!over){
+			    		me=!me;
+			    		computerAl();
+			    	}
+			    }
+			    //onStep(i,j,me);
+			    //me=!me;    
+			}
+			
+
+			//统计赢法数组    这里应该是赋值，而不是
+		    //var wins []
+			var wins=[];
+			//遍历棋盘  搞一个三维数组
+			for(var i=0;i<15;i++){
+				wins[i]=[];
+				for(var j=0;j<15;j++){
+					wins[i][j]=[];
+				}
+			}
+			//赢法的索引
+			var count=0;
+			
+			//横线赢法算法
+			for(var i=0;i<15;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[i][j+k][count]=true;
+					}
+					count++;
+				}
+			}
+			//竖线赢法
+			for(var i=0;i<15;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[j+k][i][count]=true;
+					}
+					count++;
+				}
+			}
+			//斜线赢法
+			for(var i=0;i<11;i++){
+				for(var j=0;j<11;j++){
+					for(var k=0;k<5;k++){
+						wins[i+k][j+k][count]=true;
+					}
+					count++;
+				}
+			}
+			//反斜线
+			for(var i=0;i<11;i++){
+				for(var j=14;j>3;j--){
+					for(var k=0;k<5;k++){
+						wins[i+k][j-k][count]=true;
+					}
+					count++;
+				}
+			}
+			console.log(count);//572种
+			var myWin=[];
+			var computerWin=[];
+			for(var i=0;i<count;i++){
+				myWin[i]=0;
+				computerWin[i]=0;
+			}
+			
+			//计算机AL算法
+			var computerAl=function(){
+				//onStep(2,2,false);
+				//我方分数
+				var mySource=[];
+				//计算机分数
+				var computerSource=[];
+				var max=0;//保存最高点分数
+				var u=0,v=0;//保持最高点分数坐标
+				for(var i=0;i<15;i++){
+					mySource[i]=[];
+					computerSource[i]=[];
+					for(var j=0;j<15;j++){
+						mySource[i][j]=0;
+						computerSource[i][j]=0;
+					}
+				}
+				
+				for(var i=0;i<15;i++){
+					for(var j=0;j<15;j++){
+						if(chessBoard[i][j]==0){
+							for(var k=0;k<count;k++){								
+								if(wins[i][j][k]){
+									//我方
+									if(myWin[k]==1){
+										mySource[i][j]+=200;
+									}else if(myWin[k]==2){
+										mySource[i][j]+=400;
+									}else if(myWin[k]==3){
+										mySource[i][j]+=2000;
+									}else if(myWin[k]==4){
+										mySource[i][j]+=10000;
+									}	
+									//计算机方
+									if(computerWin[k]==1){
+										computerSource[i][j]+=200;
+									}else if(computerWin[k]==2){
+										computerSource[i][j]+=400;
+									}else if(computerWin[k]==3){
+										computerSource[i][j]+=2000;
+									}else if(computerWin[k]==4){
+										computerSource[i][j]+=10000;
+									}
+								}							
+							}
+							if(mySource[i][j]>max){
+								max=mySource[i][j];
+								u=i;
+								v=j;
+							}else if(mySource[i][j]==max){
+								if(computerSource[i][j]>computerSource[u][v]){
+									u=i;
+									v=j;
+								}
+							}
+							
+							if(computerSource[i][j]>max){
+								max=computerSource[i][j];
+								u=i;
+								v=j;
+							}else if(computerSource[i][j]==max){
+								if(mySource[i][j]>mySource[u][v]){
+									u=i;
+									v=j;
+								}
+							}						
+						}
+					}
+				}
+				
+				onStep(u,v,false);
+				chessBoard[u][v]=2;
+				for(var k=0;k<count;k++){
+					if(wins[u][v][k]){
+						computerWin[k]++;
+						myWin[k]=6;
+						if(computerWin[k]==5){
+							alert("计算机赢了");
+							over=true;
+						}
+					}
+				}
+				if(!over){
+					me=!me;
+				}
+			}	
+			
+		</script>
+</html>
